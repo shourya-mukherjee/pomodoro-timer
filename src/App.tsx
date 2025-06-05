@@ -1,5 +1,6 @@
 import Timer from "./components/Timer";
 import Controls from "./components/Controls";
+import Settings from "./components/Settings";
 import "./App.css";
 import { useState } from "react";
 
@@ -9,6 +10,7 @@ function App() {
   >("Focus");
   const [isRunning, setIsRunning] = useState(false);
   const [shortBreakCount, setShortBreakCount] = useState(0);
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleSessionEnd = () => {
     console.log(`shortBreakCount ${shortBreakCount}`);
@@ -40,6 +42,17 @@ function App() {
 
   return (
     <>
+      {/* Settings button in top right corner */}
+      <button
+        className="settings-button"
+        onClick={() => setShowSettings(true)}
+        aria-label="Settings"
+      >
+        ⚙️
+      </button>
+
+      {/* Settings modal */}
+      {showSettings && <Settings onClose={() => setShowSettings(false)} />}
       <Timer
         initialMinutes={getInitialMinutes()}
         onSessionEnd={handleSessionEnd}
