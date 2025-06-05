@@ -11,21 +11,19 @@ function App() {
   const [shortBreakCount, setShortBreakCount] = useState(0);
 
   const handleSessionEnd = () => {
-    let nextSessionType: "Focus" | "Short Break" | "Long Break";
     console.log(`shortBreakCount ${shortBreakCount}`);
+
     if (sessionType === "Focus") {
-      if (shortBreakCount === 2) {
-        nextSessionType = "Long Break";
-        setShortBreakCount(0);
-      } else {
-        nextSessionType = "Short Break";
-        setShortBreakCount((prev) => prev + 1);
-      }
+      const nextCount = shortBreakCount === 2 ? 0 : shortBreakCount + 1;
+      const nextSessionType =
+        shortBreakCount === 2 ? "Long Break" : "Short Break";
+
+      setShortBreakCount(nextCount); // Pure updater
+      setSessionType(nextSessionType); // Separate call, no dependency on inside of another setState
     } else {
-      nextSessionType = "Focus";
+      setSessionType("Focus");
     }
 
-    setSessionType(nextSessionType);
     setIsRunning(false);
   };
 
