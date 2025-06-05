@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Timer from "./components/Timer";
+import Controls from "./components/Controls";
+import "./App.css";
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sessionType, setSessionType] = useState<
+    "Focus" | "Short Break" | "Long Break"
+  >("Focus");
+  const [isRunning, setIsRunning] = useState(false);
+  const [shortBreakCount, setShortBreakCount] = useState(0);
+
+  const handleSessionEnd = () => {
+    let nextSessionType: "Focus" | "Short Break" | "Long Break";
+    console.log(`shortBreakCount ${shortBreakCount}`);
+    if (sessionType === "Focus") {
+      if (shortBreakCount === 2) {
+        nextSessionType = "Long Break";
+        setShortBreakCount(0);
+      } else {
+        nextSessionType = "Short Break";
+        setShortBreakCount((prev) => prev + 1);
+      }
+    } else {
+      nextSessionType = "Focus";
+    }
+
+    setSessionType(nextSessionType);
+    setIsRunning(false);
+  };
+
+  const getInitialMinutes = () => {
+    switch (sessionType) {
+      case "Focus":
+        return 0.1;
+      case "Long Break":
+        return 0.05;
+      case "Short Break":
+        return 0.02;
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Timer
+        initialMinutes={getInitialMinutes()}
+        onSessionEnd={handleSessionEnd}
+        sessionType={sessionType}
+        isRunning={isRunning}
+      ></Timer>
+      <Controls
+        onStart={() => setIsRunning(true)}
+        onStop={() => setIsRunning(false)}
+        isRunning={isRunning}
+      ></Controls>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
