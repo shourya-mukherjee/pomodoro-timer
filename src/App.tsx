@@ -12,6 +12,10 @@ function App() {
   const [shortBreakCount, setShortBreakCount] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
 
+  const [focusTime, setFocusTime] = useState(25);
+  const [shortBreakTime, setShortBreakTime] = useState(5);
+  const [longBreakTime, setLongBreakTime] = useState(10);
+
   const handleSessionEnd = () => {
     console.log(`shortBreakCount ${shortBreakCount}`);
 
@@ -32,11 +36,11 @@ function App() {
   const getInitialMinutes = () => {
     switch (sessionType) {
       case "Focus":
-        return 0.1;
+        return focusTime;
       case "Long Break":
-        return 0.05;
+        return longBreakTime;
       case "Short Break":
-        return 0.02;
+        return shortBreakTime;
     }
   };
 
@@ -52,7 +56,17 @@ function App() {
       </button>
 
       {/* Settings modal */}
-      {showSettings && <Settings onClose={() => setShowSettings(false)} />}
+      {showSettings && (
+        <Settings
+          onClose={() => setShowSettings(false)}
+          focusTime={focusTime}
+          setFocusTime={setFocusTime}
+          shortBreakTime={shortBreakTime}
+          setShortBreakTime={setShortBreakTime}
+          longBreakTime={longBreakTime}
+          setLongBreakTime={setLongBreakTime}
+        />
+      )}
       <Timer
         initialMinutes={getInitialMinutes()}
         onSessionEnd={handleSessionEnd}
